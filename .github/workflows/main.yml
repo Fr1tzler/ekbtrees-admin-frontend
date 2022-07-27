@@ -1,4 +1,4 @@
-name: Deploy
+name: Build & Deploy
 on:
   push:
     branches:
@@ -34,8 +34,9 @@ jobs:
           build-args: |
             build_mode=Release
 
-  publish:
-    name: 'Build'
+  deploy:
+    name: 'Deploy'
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: "Run deploy on server"
@@ -46,6 +47,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            docker login ghcr.io -u Fr1itzler --password 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
             cd ekbtrees-admin-frontend
             sudo docker-compose pull
             sudo docker-compose up -d
